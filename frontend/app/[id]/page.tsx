@@ -3,8 +3,9 @@ import useStore from "@/utils/stores/main";
 import { useParams } from "next/navigation";
 
 export default function Page() {
-  const { analysis } = useStore();
   const params = useParams();
+  const { analysis } = useStore();
+  const project = analysis.filter((data) => data.id === (params.id as any));
 
-  return <p>TODO: finish the project page</p>
+  return <p>{JSON.stringify(project)}</p>;
 }
