@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from PIL import Image
+from flask_cors import CORS, cross_origin
 from ultralytics import YOLO
 
 
@@ -7,6 +8,8 @@ import io
 
 app = Flask(__name__) #Define Flask App
 model = YOLO("yolov9c.pt") #Define YOLO model
+CORS(app, origins="*")
+
 
 #Function to process image and get rectangle start (top-left) and end (bottom-right) points
 def process_image(image, model):

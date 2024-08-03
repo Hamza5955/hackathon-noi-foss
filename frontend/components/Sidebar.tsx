@@ -11,30 +11,15 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaFileImport, FaPlus } from "react-icons/fa";
 
 export default function Sidebar({ children }: any): React.JSX.Element {
+  const router = useRouter();
+  const path = usePathname();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { addAnalysis, analysis } = useStore();
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setUploadedImage(e.target.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUpload = () => {
-    // Add your upload logic here
-    alert("Image uploaded!");
-    setUploadedImage(null); // Reset the image after upload
-  };
 
   return (
     <div className="flex h-dvh">
@@ -42,7 +27,11 @@ export default function Sidebar({ children }: any): React.JSX.Element {
         <div className="overflow-y-auto">
           {analysis.map((data: Analysis, i: number) => (
             <Link key={i} href={`/${data.id}`}>
-              <div className="flex flex-row hover:bg-blue-100 hover:cursor-pointer 00 items-start p-2 gap-2.5 pb-4">
+              <div
+                className={`flex ${
+                  path == `/${data.id}` ? "bg-blue-100" : "hover:bg-blue-100"
+                } flex-row  hover:cursor-pointer items-start p-2 gap-2.5 pb-4`}
+              >
                 <div className="rounded-md w-[80px] bg-blue-200 mt-2 h-[45px] flex-shrink-0 border-2 border-blue-500" />
                 <div className="flex flex-col">
                   <span className="font-semibold">{data.name}</span>
@@ -69,15 +58,14 @@ export default function Sidebar({ children }: any): React.JSX.Element {
                   <ModalBody>
                     <div className="h-[250px] flex items-center gap-8">
                       <div
-
                         onClick={() => {
                           addAnalysis({
                             name: `Unnamed ${analysis.length + 1}`,
                           });
                           //close the modal
                           onClose();
+                          router.push(`/${analysis.length + 1}`);
                         }}
-
                         className="h-full flex flex-col gap-6 font-semibold flex-shrink-0 transition-all cursor-pointer border-2 border-blue-500 !text-blue-500 hover:!text-white hover:bg-blue-500 rounded-md text-white flex justify-center items-center w-[250px]"
                       >
                         <FaPlus size={32} />
@@ -100,10 +88,8 @@ export default function Sidebar({ children }: any): React.JSX.Element {
           </Button>
         </div>
       </div>
-      {/* <div className="ml-2 overflow-x-hidden overflow-y-auto w-full">
-        {children}
-      </div> */}
-      <div className="mt-4 flex flex-col items-center w-full">
+      <div className="overflow-x-hidden overflow-y-auto w-full relative">{children}</div>
+      {/* <div className="mt-4 flex flex-col items-center w-full">
         <input type="file" accept="image/*" onChange={handleFileChange} />
         {uploadedImage && (
           <>
@@ -113,7 +99,7 @@ export default function Sidebar({ children }: any): React.JSX.Element {
             </Button>
           </>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
