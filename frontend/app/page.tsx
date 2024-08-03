@@ -12,7 +12,7 @@ export default function Home() {
           : "Welcome, to get started create or import an analysis with the bottom right button"}
       </p>
       <span className="opacity-40">
-        All projects are stored locally and won't get saved on the server.
+        All projects are stored locally and won&apos;t get saved on the server.
       </span>
     </div>
   );
